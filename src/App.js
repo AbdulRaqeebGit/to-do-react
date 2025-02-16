@@ -1,53 +1,63 @@
 import React, { useState } from "react";
-import './App.css';
+import "./App.css";
+import Switch from "react-switch";
 
 function App() {
-  const [tasks, setTasks] = useState([]);
-  const [inputValue, setInputValue] = useState("");
+  const [todos, setTodos] = useState([]);
+  const [input, setInput] = useState("");
+  const [isDarkMode, setIsDarkMode] = useState(false);
 
-  const addTask = () => {
-    if (inputValue.trim() !== "") {
-      setTasks([...tasks, inputValue]);
-      setInputValue("");
+  const addTodo = () => {
+    if (input.trim() !== "") {
+      setTodos([...todos, input]);
+      setInput("");
     }
   };
 
-  const removeTask = (index) => {
-    const newTasks = tasks.filter((_, i) => i !== index);
-    setTasks(newTasks);
+  const removeTodo = (index) => {
+    const newTodos = todos.filter((_, i) => i !== index);
+    setTodos(newTodos);
   };
 
-  const clearAllTasks = () => {
-    setTasks([]);
+  const toggleDarkMode = (checked) => {
+    setIsDarkMode(checked);
   };
 
   return (
-    <div className="App">
-      <div className='container'>
-        <div className='box'>
-          <h1>TO DO LIST</h1>
-          <input
-            type="text"
-            placeholder='Enter your task'
-            value={inputValue}
-            onChange={(e) => setInputValue(e.target.value)} 
-            required
+    <div className={`App ${isDarkMode ? "dark-mode" : "light-mode"}`}>
+      <div className="mode-toggle">
+        <label>
+          <span>{isDarkMode ? "Dark Mode" : "Light Mode"}</span>
+          <Switch
+            onChange={toggleDarkMode}
+            checked={isDarkMode}
+            onColor="#86d3ff"
+            offColor="#888"
+            height={20}
+            width={40}
           />
-          <button onClick={addTask}>ADD</button> 
-        </div>
-        <div>
-          <h1>Task List</h1>
-          <ul>
-            {tasks.map((task, index) => ( 
-              <li key={index}>
-                {index + 1}. {task} 
-                <button onClick={() => removeTask(index)}>-</button>
-              </li>
-            ))}
-          </ul>
-          <button onClick={clearAllTasks}>Clear All</button> 
-        </div>
+        </label>
       </div>
+
+      <h1>To-Do App</h1>
+      <div>
+        <input
+          type="text"
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          placeholder="Add a new task"
+          className={isDarkMode ? "dark-input" : "light-input"}
+        />
+        <button onClick={addTodo}>Add</button>
+      </div>
+      <ul>
+        {todos.map((todo, index) => (
+          <li key={index} className={isDarkMode ? "dark-item" : "light-item"}>
+            {todo}
+            <button onClick={() => removeTodo(index)}>Remove</button>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }
